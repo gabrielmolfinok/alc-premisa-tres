@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import axios from "axios";
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || `http://localhost:8080/joke`;
 
 const StyledBackground = styled.div`
   ${(props) => `
@@ -21,7 +23,7 @@ function App() {
 
   const getJoke = useCallback(async () => {
     try {
-      const res = await axios.get("http://localhost:8080/joke");
+      const res = await axios.get(API_BASE_URL);
       const newjoke = Object.assign({}, res.data.joke);
       newjoke.joke = newjoke.joke.replace(/\n/g, "<br />");
       console.log(newjoke);
@@ -45,7 +47,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:8080/joke", newJoke);
+      const res = await axios.post(API_BASE_URL, newJoke);
       alert(`Gracias por tu chiste ${res.data.joke.joker}!`);
       setNewJoke({
         joke: "",
@@ -58,7 +60,7 @@ function App() {
 
   const handleReaction = async (liked) => {
     try {
-      await axios.put(`http://localhost:8080/joke/${currentJoke._id}`, {
+      await axios.put(`${API_BASE_URL}/${currentJoke._id}`, {
         liked,
       });
       await getJoke();
